@@ -4,7 +4,7 @@ const PLANE_HEIGHT = 4096;
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
-const CAMERA_FAR_PLANE = 12000;
+const CAMERA_FAR_PLANE = 20000;
 
 const STEP = 0.00100;
 const SIZE = 225;
@@ -62,7 +62,7 @@ function CreateTerrain(elevations) {
         geometry.vertices[i].z = elevations[i] * DEPTH;
         }
 
-    let material = new THREE.MeshBasicMaterial( { color: 0xffff6e, wireframe: true } );
+    let material = new THREE.MeshBasicMaterial( { color: 0xcfff95, wireframe: true } );
     plane = new THREE.Mesh( geometry, material );
     plane.rotation.x = -Math.PI / 2;
 
@@ -71,8 +71,23 @@ function CreateTerrain(elevations) {
     locationLabel.innerText = `${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`;
 }
 
+function AddAxis() {
+    var material = new THREE.LineBasicMaterial({
+        color: 0x40c4ff
+    });
+    
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(
+        new THREE.Vector3( 0, -10000, 0),
+        new THREE.Vector3( 0, 10000, 0)
+    );
+    
+    var line = new THREE.Line( geometry, material );
+    scene.add( line );
+}
+
 function LoadScene(elevations) {
-    scene.background = new THREE.Color( 0x4b636e );
+    scene.background = new THREE.Color( 0x1c313a );
     let camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth/window.innerHeight, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE );
     let renderer = new THREE.WebGLRenderer();
 
@@ -93,6 +108,7 @@ function LoadScene(elevations) {
     // ---
 
     CreateTerrain(elevations);
+    AddAxis();
 
     camera.position.y = 6000;
     camera.position.z = 3000;
