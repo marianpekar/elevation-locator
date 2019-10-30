@@ -27,7 +27,7 @@ class ElevationDataProvider {
         // POST data JSON format example: {"points": [[12.3,45.6],[12.4,23.4]]}
         let postData = '{"points": [';
         for(let i = 0; i < lans.length - 1; i++) {
-            postData += `[${parseFloat(lans[i].toFixed(5))},${parseFloat(lons[i].toFixed(5))}]${i != lans.length - 2 ? ',' : ''}`;
+            postData += `[${parseFloat(lans[i].toFixed(6))},${parseFloat(lons[i].toFixed(6))}]${i != lans.length - 2 ? ',' : ''}`;
         }
         postData += ']}'
     

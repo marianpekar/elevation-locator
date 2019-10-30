@@ -4,9 +4,9 @@ const PLANE_HEIGHT = 4096;
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
-const CAMERA_FAR_PLANE = 10000;
+const CAMERA_FAR_PLANE = 12000;
 
-const STEP = 0.0100;
+const STEP = 0.00100;
 const SIZE = 225;
 let lat = 30.800375;
 let lon = 88.654650;
@@ -18,27 +18,28 @@ let scene = new THREE.Scene();
 let plane;
 
 window.addEventListener("keydown", (e) => {    
+    let callDataProvider = false;
+
     if(e.code == 'KeyA') {
         lat += STEP;
-        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
-        return;
+        callDataProvider = true;
     }
     if(e.code == 'KeyD') {
         lat -= STEP;
-        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
-        return;
+        callDataProvider = true;
     }
 
     if(e.code == 'KeyW') {
         lon += STEP;
-        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
-        return;
+        callDataProvider = true;
     }
     if(e.code == 'KeyS') {
         lon -= STEP;
-        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
-        return;
+        callDataProvider = true;
     }
+
+    if(callDataProvider)
+        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
 });
 
 function CreateTerrain(elevations) {
@@ -56,7 +57,7 @@ function CreateTerrain(elevations) {
 
     scene.add( plane );
 
-    console.log(`latitude:${parseFloat(lat).toFixed(5)},longitude:${parseFloat(lon).toFixed(5)}`);
+    console.log(`latitude:${parseFloat(lat).toFixed(6)},longitude:${parseFloat(lon).toFixed(6)}`);
 }
 
 function LoadScene(elevations) {
