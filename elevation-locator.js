@@ -17,6 +17,8 @@ elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
 let scene = new THREE.Scene();
 let plane;
 
+let locationLabel = document.getElementById('location-label');
+
 window.addEventListener("keydown", (e) => {    
     let callDataProvider = false;
 
@@ -57,7 +59,7 @@ function CreateTerrain(elevations) {
 
     scene.add( plane );
 
-    console.log(`latitude:${parseFloat(lat).toFixed(6)},longitude:${parseFloat(lon).toFixed(6)}`);
+    locationLabel.innerText = `${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`;
 }
 
 function LoadScene(elevations) {
