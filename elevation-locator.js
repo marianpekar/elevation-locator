@@ -1,52 +1,97 @@
-class ElevationDataProvider {
-    constructor() {
-        this.elevations = [];
-    }
+const DEPTH = 1;
+const PLANE_WIDTH = 4096;
+const PLANE_HEIGHT = 4096;
 
-    GetElevationData(lat, lon, step, size) {
-        this.elevations = [];
+const CAMERA_FOV = 75;
+const CAMERA_NEAR_PLANE = 0.1;
+const CAMERA_FAR_PLANE = 10000;
 
-        let latStart = lat - size * step * 0.5;
-        let latEnd = lat + size * step *  0.5;
-        
-        let lonStart = lon - size * step * 0.5;
-        let lonEnd = lon + size * step * 0.5;
-        
-        let lans = [];
-        let lons = [];
-        
-        for(let i = latStart; i <= latEnd; i += step) {
-            lans.push(i);
-        }
-        
-        for(let i = lonStart; i <= lonEnd; i += step) {
-            lons.push(i);
-        }
-        
-        // POST data JSON format example: {"points": [[12.3,45.6],[12.4,23.4]]}
-        let postData = '{"points": [';
-        for(let i = 0; i < lans.length - 1; i++) {
-            postData += `[${parseFloat(lans[i].toFixed(5))},${parseFloat(lons[i].toFixed(5))}]${i != lans.length - 2 ? ',' : ''}`;
-        }
-        postData += ']}'
-    
-        let requestUrl = "https://elevation-api.io/api/elevation"
-        fetch(requestUrl, {
-            headers: { "Content-Type": "application/json; charset=utf-8" },
-            method: 'POST',
-            body: postData
-        })
-          .then(response => response.json())
-          .then(data => {
-            data.elevations.forEach(element => { this.elevations.push(element.elevation); });
-        });
-    }
-}
-
-let lat = 39.90974;
-let lon = -106.17188;
-let step = 0.00100;
-let size = 250;
+const STEP = 0.0100;
+const SIZE = 225;
+let lat = 30.800375;
+let lon = 88.654650;
 
 let elevationDataProvider = new ElevationDataProvider();
-elevationDataProvider.GetElevationData(lat, lon, step, size)
+elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
+
+let scene = new THREE.Scene();
+let plane;
+
+window.addEventListener("keydown", (e) => {    
+    if(e.code == 'KeyA') {
+        lat += STEP;
+        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+        return;
+    }
+    if(e.code == 'KeyD') {
+        lat -= STEP;
+        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+        return;
+    }
+
+    if(e.code == 'KeyW') {
+        lon += STEP;
+        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+        return;
+    }
+    if(e.code == 'KeyS') {
+        lon -= STEP;
+        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+        return;
+    }
+});
+
+function CreateTerrain(elevations) {
+    scene.remove(plane);
+
+    let geometry = new THREE.PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, Math.round(Math.sqrt(SIZE)), Math.round(Math.sqrt(SIZE)));
+
+    for (let i = 0, l = geometry.vertices.length; i < l; i++) {
+        geometry.vertices[i].z = elevations[i] * DEPTH;
+        }
+
+    let material = new THREE.MeshBasicMaterial( { color: 0xffd95a, wireframe: true } );
+    plane = new THREE.Mesh( geometry, material );
+    plane.rotation.x = -Math.PI / 2;
+
+    scene.add( plane );
+
+    console.log(`latitude:${parseFloat(lat).toFixed(5)},longitude:${parseFloat(lon).toFixed(5)}`);
+}
+
+function LoadScene(elevations) {
+    scene.background = new THREE.Color( 0x4b636e );
+    let camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth/window.innerHeight, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE );
+    let renderer = new THREE.WebGLRenderer();
+
+    new THREE.OrbitControls( camera, renderer.domElement );
+
+    // event listeners
+    window.addEventListener( 'resize', onWindowResize, false );
+
+    function onWindowResize(){
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+    }
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+    // ---
+
+    CreateTerrain(elevations);
+
+    camera.position.y = 6000;
+    camera.position.z = 3000;
+    camera.lookAt(plane.position);
+
+    // render loop
+    let animate = function () {
+        requestAnimationFrame( animate );
+        renderer.render( scene, camera );
+    };
+
+    animate();
+    // ---
+}
