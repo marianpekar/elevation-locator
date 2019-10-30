@@ -30,13 +30,22 @@ window.addEventListener("keydown", (e) => {
         lat -= STEP;
         callDataProvider = true;
     }
-
     if(e.code == 'KeyW') {
         lon += STEP;
         callDataProvider = true;
     }
     if(e.code == 'KeyS') {
         lon -= STEP;
+        callDataProvider = true;
+    }
+    if(e.code == 'KeyE') {
+        lat -= STEP;
+        lon -= STEP;
+        callDataProvider = true;
+    }
+    if(e.code == 'KeyQ') {
+        lat += STEP;
+        lon += STEP;
         callDataProvider = true;
     }
 
@@ -47,13 +56,13 @@ window.addEventListener("keydown", (e) => {
 function CreateTerrain(elevations) {
     scene.remove(plane);
 
-    let geometry = new THREE.PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, Math.round(Math.sqrt(SIZE)), Math.round(Math.sqrt(SIZE)));
+    let geometry = new THREE.PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, Math.round(Math.sqrt(SIZE)) - 2, Math.round(Math.sqrt(SIZE)) - 2);
 
     for (let i = 0, l = geometry.vertices.length; i < l; i++) {
         geometry.vertices[i].z = elevations[i] * DEPTH;
         }
 
-    let material = new THREE.MeshBasicMaterial( { color: 0xffd95a, wireframe: true } );
+    let material = new THREE.MeshBasicMaterial( { color: 0xffff6e, wireframe: true } );
     plane = new THREE.Mesh( geometry, material );
     plane.rotation.x = -Math.PI / 2;
 
