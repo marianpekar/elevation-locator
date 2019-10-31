@@ -1,3 +1,5 @@
+const KEY = 'lCoQ553kF28D51eDebb39ed02vbbC1';
+
 const DEPTH = 1;
 const PLANE_WIDTH = 4096;
 const PLANE_HEIGHT = 4096;
@@ -11,7 +13,7 @@ const SIZE = 225;
 let lat = 30.800375;
 let lon = 88.654650;
 
-let elevationDataProvider = new ElevationDataProvider();
+let elevationDataProvider = new ElevationDataProvider(KEY);
 elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
 
 let scene = new THREE.Scene();

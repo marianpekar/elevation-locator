@@ -1,6 +1,7 @@
 class ElevationDataProvider {
-    constructor() {
+    constructor(key) {
         this.elevations = [];
+        this.key = key;
     }
 
     GetElevationData(lat, lon, step, size, Consumer) {
@@ -31,7 +32,7 @@ class ElevationDataProvider {
         }
         postData += ']}'
     
-        let requestUrl = "https://elevation-api.io/api/elevation"
+        let requestUrl = `https://elevation-api.io/api/elevation?key=${this.key}`;
         fetch(requestUrl, {
             headers: { "Content-Type": "application/json; charset=utf-8" },
             method: 'POST',
