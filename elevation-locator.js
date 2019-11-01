@@ -10,11 +10,24 @@ const CAMERA_FAR_PLANE = 20000;
 
 const STEP = 0.00100;
 const SIZE = 225;
-let lat = 30.800375;
-let lon = 88.654650;
+
+let lat;
+let lon;
 
 let elevationDataProvider = new ElevationDataProvider(KEY);
-elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
+
+Init();
+
+function Init() {
+    if(navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(SetLocation);
+}
+
+function SetLocation(position) {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
+}
 
 let scene = new THREE.Scene();
 let plane;
