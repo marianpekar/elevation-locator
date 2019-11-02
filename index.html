@@ -4,56 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <style>
-        * { margin: 0; padding: 0; }
-        body { overflow: hidden; position: fixed; font-size: 0.8em }
-        canvas { display: block; width: 100%; height: 100% }
-        li { list-style-type: none; }
-
-        #location-label {  
-            color: #40c4ff;    
-        }
-
-        #elevation-label {
-            margin-top: 1.2em;
-            color: #cfff95;    
-        }
-
-        #resolution-label {
-            margin-top: 2.4em;
-            color: #d81b60;    
-        }
-
-        .label {
-            font-family: sans-serif;  
-            font-size: 0.9em;
-            position: absolute;    
-            margin-left: 0.5em;
-            overflow: hidden;
-        }
-
-        .buttons {    
-            position: absolute;
-            margin: 1em;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .zoom-button {
-            position: relative;
-            top: 0.66em;
-            width: 2em;
-            height: 2em;
-        }
-
-        .location-button {
-            position: relative;
-            left: 0.43em;
-            top: 0.66em;
-            width: 3.5em;
-            height: 3.5em;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Elevation Locator</title>
 </head>
 <body>
@@ -63,10 +14,23 @@
 
     <div class="buttons">
         <ul>
-            <li><img src="images/location.svg" class="location-button" id="location-button" alt="Current Geolocation"></li>
+            <li><img src="images/location.svg" class="location-button" id="location-button" alt="Get Current Geolocation"></li>
             <li>
-                <img src="images/plus.svg" class="zoom-button" id="zoom-in-button" alt="+">
-                <img src="images/minus.svg" class="zoom-button" id="zoom-out-button" alt="-">
+                <img src="images/plus.svg" class="zoom-button" id="zoom-in-button" alt="Zoom In">
+                <img src="images/minus.svg" class="zoom-button" id="zoom-out-button" alt="Zoom Out">
+            </li>
+        </ul>
+    </div>
+
+    <div class="arrow-buttons">  
+        <ul>
+            <li>
+                <img src="images/arrowUp.svg" class="arrow-button" id="up-arrow-button" alt="Go North">
+            <li>
+            </li>
+                <img src="images/arrowLeft.svg" class="arrow-button" id="left-arrow-button" alt="Go West">
+                <img src="images/arrowDown.svg" class="arrow-button" id="down-arrow-button" alt="Go South">
+                <img src="images/arrowRight.svg" class="arrow-button" id="right-arrow-button" alt="Go East">
             </li>
         </ul>
     </div>

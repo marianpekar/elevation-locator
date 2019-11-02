@@ -34,6 +34,11 @@ let zoomInButton = document.getElementById('zoom-in-button');
 let zoomOutButton = document.getElementById('zoom-out-button');
 let locationButton = document.getElementById('location-button');
 
+let leftArrowButton = document.getElementById('left-arrow-button');
+let rightArrowButton = document.getElementById('right-arrow-button');
+let upArrowButton = document.getElementById('up-arrow-button');
+let downArrowButton = document.getElementById('down-arrow-button');
+
 let locationLabel = document.getElementById('location-label');
 let elevationLabel = document.getElementById('elevation-label');
 let resolutionLabel = document.getElementById('resolution-label');
@@ -86,28 +91,49 @@ function ZoomOut() {
     if(step > MAX_STEP) step = MAX_STEP;
 }
 
+function GoNorth() {
+    lat += step;
+}
+
+function GoSouth() {
+    lat -= step;
+}
+
+function GoWest() {
+    lon -= step;
+}
+
+function GoEast() {
+    lon += step;
+}
+
 function AddEventListeners() {
     locationButton.addEventListener('click', GetCurrentLocation);
     zoomInButton.addEventListener('click', ZoomIn);
     zoomOutButton.addEventListener('click', ZoomOut);
 
+    leftArrowButton.addEventListener('click', GoWest);
+    rightArrowButton.addEventListener('click', GoEast);
+    upArrowButton.addEventListener('click', GoNorth);
+    downArrowButton.addEventListener('click', GoSouth);
+
     window.addEventListener("keydown", (e) => {    
         let callDataProvider = false;
     
         if(e.code == 'KeyD') {
-            lon += step;
+            GoEast();
             callDataProvider = true;
         }
         if(e.code == 'KeyA') {
-            lon -= step;
+            GoWest();
             callDataProvider = true;
         }
         if(e.code == 'KeyW') {
-            lat += step;
+            GoNorth();
             callDataProvider = true;
         }
         if(e.code == 'KeyS') {
-            lat -= step;
+            GoSouth();
             callDataProvider = true;
         }
         if(e.code == 'KeyE') {
