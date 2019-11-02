@@ -8,11 +8,14 @@ const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
 const CAMERA_FAR_PLANE = 20000;
 
-const STEP = 0.010000;
+const STEP = 0.001000;
 const SIZE = 225;
 
 let lat;
 let lon;
+
+let rotate = 0;
+const ROTATION_SPEED = 0.001; 
 
 let elevationDataProvider = new ElevationDataProvider(KEY);
 
@@ -43,7 +46,7 @@ function UpdateLabels() {
     locationLabel.innerText = `${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`;
 
     let centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
-    elevationLabel.innerText = Math.round(centerElevation) + ' m';
+    elevationLabel.innerText = Math.round(centerElevation) + ' m a.s.l.';
 
     let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / 20000) * centerElevation));
     let labelStylePos = `left: ${labelScreenPos.x}px; top: ${0.333 * labelScreenPos.y}px`;
@@ -86,6 +89,12 @@ function AddEventListeners() {
     
         if(callDataProvider) 
             elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+    });
+
+    window.addEventListener("keypress", (e) => {
+        if(e.code == 'KeyR') {
+            rotate = !rotate;
+        }
     });
 
     function OnWindowResize(){
@@ -155,10 +164,14 @@ function LoadScene(elevations) {
     let animate = function () {
         requestAnimationFrame( animate );
         renderer.render( scene, camera );
+
+        if(rotate)
+            plane.rotation.z += ROTATION_SPEED;
     };
+    // --
 
     animate();
-    // ---
+
 }
 
 //pass new THREE.Vector3
