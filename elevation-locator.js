@@ -29,6 +29,8 @@ let plane;
 let locationLabel = document.getElementById('location-label');
 let elevationLabel = document.getElementById('elevation-label');
 
+let centerElevation = 0;
+
 Init();
 
 function Init() {
@@ -47,7 +49,7 @@ function SetLocation(position) {
 function UpdateLabels() {
     locationLabel.innerHTML = `${parseFloat(lat).toFixed(6)},&nbsp${parseFloat(lon).toFixed(6)}`;
 
-    let centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
+    centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
     elevationLabel.innerHTML = Math.round(centerElevation) + '&nbspm&nbspa.s.l.';
 
     let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / ( 2 * AXIS_LENGHT )) * centerElevation));
@@ -133,11 +135,11 @@ function CreateTerrain(elevations) {
 }
 
 function AddAxis() {
-    var material = new THREE.LineBasicMaterial({
+    let material = new THREE.LineBasicMaterial({
         color: 0x40c4ff
     });
     
-    var geometry = new THREE.Geometry();
+    let geometry = new THREE.Geometry();
     geometry.vertices.push(
         new THREE.Vector3( 0, -AXIS_LENGHT, 0),
         new THREE.Vector3( 0, AXIS_LENGHT, 0)
@@ -145,6 +147,21 @@ function AddAxis() {
     
     let axis = new THREE.Line( geometry, material );
     scene.add( axis );
+}
+
+function AddNorthPointer() {
+    let material = new THREE.LineBasicMaterial({
+        color: 0xee0000
+    });
+
+    geometry = new THREE.Geometry();
+    geometry.vertices.push(
+        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, 0),
+        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, -PLANE_WIDTH / 10)
+    );
+
+    let northSign = new THREE.Line( geometry, material);
+    scene.add( northSign );
 }
 
 function LoadScene(elevations) {
@@ -157,6 +174,7 @@ function LoadScene(elevations) {
 
     CreateTerrain(elevations);
     AddAxis();
+    AddNorthPointer();
 
     camera.position.y = 6000;
     camera.position.z = 3000;
