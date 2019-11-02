@@ -1,6 +1,5 @@
 const KEY = 'lCoQ553kF28D51eDebb39ed02vbbC1';
 
-const DEPTH = 1;
 const PLANE_WIDTH = 4096;
 const PLANE_HEIGHT = 4096;
 
@@ -122,7 +121,7 @@ function CreateTerrain(elevations) {
     let geometry = new THREE.PlaneGeometry(PLANE_WIDTH, PLANE_HEIGHT, Math.round(Math.sqrt(SIZE)) - 2, Math.round(Math.sqrt(SIZE)) - 2);
 
     for (let i = 0, l = geometry.vertices.length; i < l; i++) {
-        geometry.vertices[i].z = elevations[i] * DEPTH;
+        geometry.vertices[i].z = elevations[i];
         }
 
     let material = new THREE.MeshBasicMaterial( { color: 0xcfff95, wireframe: true } );
