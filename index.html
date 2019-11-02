@@ -8,6 +8,7 @@
         * { margin: 0; padding: 0; }
         body { overflow: hidden; position: fixed; font-size: 0.8em }
         canvas { display: block; width: 100%; height: 100% }
+        li { list-style-type: none; }
 
         #location-label {  
             color: #40c4ff;    
@@ -20,7 +21,7 @@
 
         #resolution-label {
             margin-top: 2.4em;
-            color: #ff0000;    
+            color: #d81b60;    
         }
 
         .label {
@@ -30,6 +31,28 @@
             margin-left: 0.5em;
             overflow: hidden;
         }
+
+        .buttons {    
+            position: absolute;
+            margin: 1em;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .zoom-button {
+            position: relative;
+            top: 0.66em;
+            width: 2em;
+            height: 2em;
+        }
+
+        .location-button {
+            position: relative;
+            left: 0.43em;
+            top: 0.66em;
+            width: 3.5em;
+            height: 3.5em;
+        }
     </style>
     <title>Elevation Locator</title>
 </head>
@@ -37,6 +60,16 @@
     <div id="location-label" class="label"></div>
     <div id="elevation-label" class="label"></div>
     <div id="resolution-label" class="label"></div>
+
+    <div class="buttons">
+        <ul>
+            <li><img src="images/location.svg" class="location-button" id="location-button" alt="Current Geolocation"></li>
+            <li>
+                <img src="images/plus.svg" class="zoom-button" id="zoom-in-button" alt="+">
+                <img src="images/minus.svg" class="zoom-button" id="zoom-out-button" alt="-">
+            </li>
+        </ul>
+    </div>
 
     <script src="three-js/three.min.js"></script>
     <script src="three-js/controls/OrbitControls.js"></script>

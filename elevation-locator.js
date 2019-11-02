@@ -30,6 +30,10 @@ let plane;
 
 let pivot = new THREE.Group(); //to rotate north pointer around
 
+let zoomInButton = document.getElementById('zoom-in-button');
+let zoomOutButton = document.getElementById('zoom-out-button');
+let locationButton = document.getElementById('location-button');
+
 let locationLabel = document.getElementById('location-label');
 let elevationLabel = document.getElementById('elevation-label');
 let resolutionLabel = document.getElementById('resolution-label');
@@ -39,10 +43,13 @@ let centerElevation = 0;
 Init();
 
 function Init() {
-    if(navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(SetLocation);
-
+    GetCurrentLocation();
     AddEventListeners();
+}
+
+function GetCurrentLocation() {
+    if(navigator.geolocation)
+        navigator.geolocation.getCurrentPosition(SetLocation); 
 }
 
 function SetLocation(position) {
@@ -67,8 +74,23 @@ function UpdateLabels() {
     resolutionLabel.setAttribute('style', labelStylePos);
 }
 
+function ZoomIn() {
+    step -= ZOOM_STEP;
+
+    if(step < MIN_STEP) step = MIN_STEP;
+}
+
+function ZoomOut() {
+    step += ZOOM_STEP;
+
+    if(step > MAX_STEP) step = MAX_STEP;
+}
 
 function AddEventListeners() {
+    locationButton.addEventListener('click', GetCurrentLocation);
+    zoomInButton.addEventListener('click', ZoomIn);
+    zoomOutButton.addEventListener('click', ZoomOut);
+
     window.addEventListener("keydown", (e) => {    
         let callDataProvider = false;
     
@@ -99,17 +121,11 @@ function AddEventListeners() {
             callDataProvider = true;
         }
         if(e.key == '+') {
-            step -= ZOOM_STEP;
-
-            if(step < MIN_STEP) step = MIN_STEP;
-
+            ZoomIn();
             callDataProvider = true;
         }
         if(e.key == '-') {
-            step += ZOOM_STEP;
-
-            if(step > MAX_STEP) step = MAX_STEP;
-
+            ZoomOut();
             callDataProvider = true;
         }
     
@@ -178,7 +194,7 @@ function AddAxis() {
 
 function AddNorthPointer() {
     let material = new THREE.LineBasicMaterial({
-        color: 0xee0000
+        color: 0xd81b60
     });
 
     let vertex0 = new THREE.Vector3( 0, centerElevation - AXIS_LENGHT * 0.1, 0);
