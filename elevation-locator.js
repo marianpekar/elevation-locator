@@ -8,7 +8,7 @@ const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
 const CAMERA_FAR_PLANE = 20000;
 
-const STEP = 0.00100;
+const STEP = 0.010000;
 const SIZE = 225;
 
 let lat;
@@ -16,11 +16,21 @@ let lon;
 
 let elevationDataProvider = new ElevationDataProvider(KEY);
 
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth/window.innerHeight, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE );
+let renderer = new THREE.WebGLRenderer();
+let plane;
+
+let locationLabel = document.getElementById('location-label');
+let elevationLabel = document.getElementById('elevation-label');
+
 Init();
 
 function Init() {
     if(navigator.geolocation)
         navigator.geolocation.getCurrentPosition(SetLocation);
+
+    AddEventListeners();
 }
 
 function SetLocation(position) {
@@ -29,44 +39,69 @@ function SetLocation(position) {
     elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
 }
 
-let scene = new THREE.Scene();
-let plane;
+function UpdateLabels() {
+    locationLabel.innerText = `${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`;
 
-let locationLabel = document.getElementById('location-label');
+    let centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
+    elevationLabel.innerText = Math.round(centerElevation) + ' m';
 
-window.addEventListener("keydown", (e) => {    
-    let callDataProvider = false;
+    let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / 20000) * centerElevation));
+    let labelStylePos = `left: ${labelScreenPos.x}px; top: ${0.333 * labelScreenPos.y}px`;
 
-    if(e.code == 'KeyA') {
-        lat += STEP;
-        callDataProvider = true;
-    }
-    if(e.code == 'KeyD') {
-        lat -= STEP;
-        callDataProvider = true;
-    }
-    if(e.code == 'KeyW') {
-        lon += STEP;
-        callDataProvider = true;
-    }
-    if(e.code == 'KeyS') {
-        lon -= STEP;
-        callDataProvider = true;
-    }
-    if(e.code == 'KeyE') {
-        lat -= STEP;
-        lon -= STEP;
-        callDataProvider = true;
-    }
-    if(e.code == 'KeyQ') {
-        lat += STEP;
-        lon += STEP;
-        callDataProvider = true;
-    }
+    locationLabel.setAttribute('style',labelStylePos);
+    elevationLabel.setAttribute('style',labelStylePos);
+}
 
-    if(callDataProvider)
-        elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
-});
+
+function AddEventListeners() {
+    window.addEventListener("keydown", (e) => {    
+        let callDataProvider = false;
+    
+        if(e.code == 'KeyA') {
+            lat += STEP;
+            callDataProvider = true;
+        }
+        if(e.code == 'KeyD') {
+            lat -= STEP;
+            callDataProvider = true;
+        }
+        if(e.code == 'KeyW') {
+            lon += STEP;
+            callDataProvider = true;
+        }
+        if(e.code == 'KeyS') {
+            lon -= STEP;
+            callDataProvider = true;
+        }
+        if(e.code == 'KeyE') {
+            lat -= STEP;
+            lon -= STEP;
+            callDataProvider = true;
+        }
+        if(e.code == 'KeyQ') {
+            lat += STEP;
+            lon += STEP;
+            callDataProvider = true;
+        }
+    
+        if(callDataProvider) 
+            elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+    });
+
+    function OnWindowResize(){
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        
+        UpdateLabels();
+    }
+    
+    window.addEventListener( 'resize', OnWindowResize, false );
+    document.addEventListener( 'mousemove', UpdateLabels, false );
+    renderer.domElement.addEventListener( 'touchmove', UpdateLabels, false );
+    renderer.domElement.addEventListener( 'wheel', UpdateLabels, false);
+}
 
 function CreateTerrain(elevations) {
     scene.remove(plane);
@@ -83,7 +118,7 @@ function CreateTerrain(elevations) {
 
     scene.add( plane );
 
-    locationLabel.innerText = `${parseFloat(lat).toFixed(6)}, ${parseFloat(lon).toFixed(6)}`;
+    UpdateLabels();
 }
 
 function AddAxis() {
@@ -97,30 +132,17 @@ function AddAxis() {
         new THREE.Vector3( 0, 10000, 0)
     );
     
-    var line = new THREE.Line( geometry, material );
-    scene.add( line );
+    let axis = new THREE.Line( geometry, material );
+    scene.add( axis );
 }
 
 function LoadScene(elevations) {
     scene.background = new THREE.Color( 0x1c313a );
-    let camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth/window.innerHeight, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE );
-    let renderer = new THREE.WebGLRenderer();
 
     new THREE.OrbitControls( camera, renderer.domElement );
 
-    // event listeners
-    window.addEventListener( 'resize', onWindowResize, false );
-
-    function onWindowResize(){
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize( window.innerWidth, window.innerHeight );
-    }
-
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
-    // ---
 
     CreateTerrain(elevations);
     AddAxis();
@@ -137,4 +159,13 @@ function LoadScene(elevations) {
 
     animate();
     // ---
+}
+
+//pass new THREE.Vector3
+function GetScreenPos(vector) {
+    vector.project(camera);
+    vector.x = ( vector.x + 1) * renderer.domElement.width / 2;
+    vector.y = - ( vector.y - 1) * renderer.domElement.height / 2;
+    vector.z = 0;
+    return vector;
 }
