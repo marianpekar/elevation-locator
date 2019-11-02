@@ -11,7 +11,7 @@ const CAMERA_FAR_PLANE = 20000;
 const AXIS_LENGHT = 10000; // meters
 
 const STEP = 0.001000;
-const SIZE = 225;
+const SIZE = 250;
 
 let lat;
 let lon;
