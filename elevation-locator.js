@@ -8,6 +8,8 @@ const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
 const CAMERA_FAR_PLANE = 20000;
 
+const AXIS_LENGHT = 10000; // meters
+
 const STEP = 0.001000;
 const SIZE = 225;
 
@@ -48,7 +50,7 @@ function UpdateLabels() {
     let centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
     elevationLabel.innerText = Math.round(centerElevation) + ' m a.s.l.';
 
-    let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / 20000) * centerElevation));
+    let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / ( 2 * AXIS_LENGHT )) * centerElevation));
     let labelStylePos = `left: ${labelScreenPos.x}px; top: ${0.333 * labelScreenPos.y}px`;
 
     locationLabel.setAttribute('style',labelStylePos);
@@ -137,8 +139,8 @@ function AddAxis() {
     
     var geometry = new THREE.Geometry();
     geometry.vertices.push(
-        new THREE.Vector3( 0, -10000, 0),
-        new THREE.Vector3( 0, 10000, 0)
+        new THREE.Vector3( 0, -AXIS_LENGHT, 0),
+        new THREE.Vector3( 0, AXIS_LENGHT, 0)
     );
     
     let axis = new THREE.Line( geometry, material );
