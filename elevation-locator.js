@@ -72,30 +72,30 @@ function AddEventListeners() {
     window.addEventListener("keydown", (e) => {    
         let callDataProvider = false;
     
-        if(e.code == 'KeyA') {
-            lat += step;
+        if(e.code == 'KeyD') {
+            lon += step;
             callDataProvider = true;
         }
-        if(e.code == 'KeyD') {
-            lat -= step;
+        if(e.code == 'KeyA') {
+            lon -= step;
             callDataProvider = true;
         }
         if(e.code == 'KeyW') {
-            lon += step;
+            lat += step;
             callDataProvider = true;
         }
         if(e.code == 'KeyS') {
-            lon -= step;
+            lat -= step;
             callDataProvider = true;
         }
         if(e.code == 'KeyE') {
-            lat -= step;
-            lon -= step;
+            lat += step;
+            lon += step;
             callDataProvider = true;
         }
         if(e.code == 'KeyQ') {
-            lat += step;
-            lon += step;
+            lat -= step;
+            lon -= step;
             callDataProvider = true;
         }
         if(e.key == '+') {
