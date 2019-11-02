@@ -57,7 +57,7 @@ function UpdateLabels() {
     centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
     elevationLabel.innerHTML = Math.round(centerElevation) + '&nbspm&nbspa.s.l.';
 
-    resolutionLabel.innerText = `${parseFloat(step).toFixed(6)}`
+    resolutionLabel.innerText = GetDms(step);
 
     let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / ( 2 * AXIS_LENGHT )) * centerElevation));
     let labelStylePos = `left: ${labelScreenPos.x}px; top: ${0.333 * labelScreenPos.y}px`;
