@@ -50,7 +50,7 @@ function SetLocation(position) {
 }
 
 function UpdateLabels() {
-    locationLabel.innerHTML = `${parseFloat(lat).toFixed(6)},&nbsp${parseFloat(lon).toFixed(6)}`;
+    locationLabel.innerHTML = DDToDMS(lat,lon);
 
     centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
     elevationLabel.innerHTML = Math.round(centerElevation) + '&nbspm&nbspa.s.l.';
@@ -226,4 +226,36 @@ function GetScreenPos(vector) {
     vector.y = - ( vector.y - 1) * renderer.domElement.height / 2;
     vector.z = 0;
     return vector;
+}
+
+function DDToDMS(lat, lon) {
+    let latResult, lonResult;
+ 
+    lat = parseFloat(lat);  
+    lon = parseFloat(lon);
+ 
+    latResult = (lat >= 0)? 'N' : 'S';
+    lonResult = (lon >= 0)? 'E' : 'W';
+
+    latResult += GetDms(lat);
+    lonResult += GetDms(lon);
+
+    return `${latResult} ${lonResult}`;
+ }
+
+function GetDms(val) {
+    let valDeg, valMin, valSec, result;
+
+    val = Math.abs(val);
+
+    valDeg = Math.floor(val);
+    result = valDeg + "º";
+
+    valMin = Math.floor((val - valDeg) * 60);
+    result += valMin + "'";
+
+    valSec = Math.round((val - valDeg - valMin / 60) * 3600 * 1000) / 1000;
+    result += valSec + '"';
+
+    return result;
 }
