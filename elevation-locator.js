@@ -2,18 +2,21 @@ const KEY = 'lCoQ553kF28D51eDebb39ed02vbbC1';
 
 const PLANE_WIDTH = 4096;
 const PLANE_HEIGHT = 4096;
+const SIZE = 250;
+
+const AXIS_LENGHT = 10000; // meters
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR_PLANE = 0.1;
 const CAMERA_FAR_PLANE = 20000;
 
-const AXIS_LENGHT = 10000; // meters
+const ZOOM_STEP = 0.0001;
+const MIN_STEP = 0.001000;
+const MAX_STEP = 1.000000;
+let step = 0.001000;
 
-const STEP = 0.001000;
-const SIZE = 250;
-
-let lat;
-let lon;
+let lat = 0;
+let lon = 0;
 
 let rotate = 0;
 const ROTATION_SPEED = 0.001; 
@@ -27,6 +30,7 @@ let plane;
 
 let locationLabel = document.getElementById('location-label');
 let elevationLabel = document.getElementById('elevation-label');
+let resolutionLabel = document.getElementById('resolution-label');
 
 let centerElevation = 0;
 
@@ -42,7 +46,7 @@ function Init() {
 function SetLocation(position) {
     lat = position.coords.latitude;
     lon = position.coords.longitude;
-    elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, LoadScene);
+    elevationDataProvider.GetElevationData(lat, lon, step, SIZE, LoadScene);
 }
 
 function UpdateLabels() {
@@ -51,11 +55,14 @@ function UpdateLabels() {
     centerElevation = elevationDataProvider.elevations[Math.round(elevationDataProvider.elevations.length / 2)];
     elevationLabel.innerHTML = Math.round(centerElevation) + '&nbspm&nbspa.s.l.';
 
+    resolutionLabel.innerText = `${parseFloat(step).toFixed(6)}`
+
     let labelScreenPos =  GetScreenPos(new THREE.Vector3(0, 0, (1 / ( 2 * AXIS_LENGHT )) * centerElevation));
     let labelStylePos = `left: ${labelScreenPos.x}px; top: ${0.333 * labelScreenPos.y}px`;
 
-    locationLabel.setAttribute('style',labelStylePos);
-    elevationLabel.setAttribute('style',labelStylePos);
+    locationLabel.setAttribute('style', labelStylePos);
+    elevationLabel.setAttribute('style', labelStylePos);
+    resolutionLabel.setAttribute('style', labelStylePos);
 }
 
 
@@ -64,34 +71,53 @@ function AddEventListeners() {
         let callDataProvider = false;
     
         if(e.code == 'KeyA') {
-            lat += STEP;
+            lat += step;
             callDataProvider = true;
         }
         if(e.code == 'KeyD') {
-            lat -= STEP;
+            lat -= step;
             callDataProvider = true;
         }
         if(e.code == 'KeyW') {
-            lon += STEP;
+            lon += step;
             callDataProvider = true;
         }
         if(e.code == 'KeyS') {
-            lon -= STEP;
+            lon -= step;
             callDataProvider = true;
         }
         if(e.code == 'KeyE') {
-            lat -= STEP;
-            lon -= STEP;
+            lat -= step;
+            lon -= step;
             callDataProvider = true;
         }
         if(e.code == 'KeyQ') {
-            lat += STEP;
-            lon += STEP;
+            lat += step;
+            lon += step;
+            callDataProvider = true;
+        }
+        if(e.key == '+') {
+            step -= ZOOM_STEP;
+
+            if(step < MIN_STEP) step = MIN_STEP;
+
+            callDataProvider = true;
+        }
+        if(e.key == '-') {
+            step += ZOOM_STEP;
+
+            if(step > MAX_STEP) step = MAX_STEP;
+
             callDataProvider = true;
         }
     
+        if(lon > 180) lon = 180;
+        if(lon < -180) lon = 180;
+        if(lat > 90) lat = 90;
+        if(lat < -90) lat = -90; 
+
         if(callDataProvider) 
-            elevationDataProvider.GetElevationData(lat, lon, STEP, SIZE, CreateTerrain);
+            elevationDataProvider.GetElevationData(lat, lon, step, SIZE, CreateTerrain);
     });
 
     window.addEventListener("keypress", (e) => {
@@ -156,7 +182,7 @@ function AddNorthPointer() {
     geometry = new THREE.Geometry();
     geometry.vertices.push(
         new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, 0),
-        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, -PLANE_WIDTH / 10)
+        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, -PLANE_WIDTH / Math.sqrt(SIZE))
     );
 
     let northSign = new THREE.Line( geometry, material);
