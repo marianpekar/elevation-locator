@@ -25,8 +25,10 @@ let elevationDataProvider = new ElevationDataProvider(KEY);
 
 let scene = new THREE.Scene();
 let camera = new THREE.PerspectiveCamera( CAMERA_FOV, window.innerWidth/window.innerHeight, CAMERA_NEAR_PLANE, CAMERA_FAR_PLANE );
-let renderer = new THREE.WebGLRenderer();
+let renderer = new THREE.WebGLRenderer({ antialias: true });
 let plane;
+
+let pivot = new THREE.Group(); //to rotate north pointer around
 
 let locationLabel = document.getElementById('location-label');
 let elevationLabel = document.getElementById('elevation-label');
@@ -179,14 +181,21 @@ function AddNorthPointer() {
         color: 0xee0000
     });
 
-    geometry = new THREE.Geometry();
-    geometry.vertices.push(
-        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, 0),
-        new THREE.Vector3( 0, centerElevation + AXIS_LENGHT * 0.1, -PLANE_WIDTH / Math.sqrt(SIZE))
-    );
+    let vertex0 = new THREE.Vector3( 0, centerElevation - AXIS_LENGHT * 0.1, 0);
+    let vertex1 = new THREE.Vector3( 0, centerElevation - AXIS_LENGHT * 0.1, PLANE_WIDTH / Math.sqrt(SIZE));
 
-    let northSign = new THREE.Line( geometry, material);
-    scene.add( northSign );
+    geometry = new THREE.Geometry();
+    geometry.vertices.push(vertex0, vertex1);
+
+    pivot.position = vertex0;
+
+    let northPointer = new THREE.Line( geometry, material );
+
+    northPointer.rotation.x = -Math.PI / 2;
+    pivot.rotation.x = -Math.PI / 2;
+
+    pivot.add( northPointer );
+    scene.add( pivot );
 }
 
 function LoadScene(elevations) {
@@ -210,13 +219,14 @@ function LoadScene(elevations) {
         requestAnimationFrame( animate );
         renderer.render( scene, camera );
 
-        if(rotate)
+        if(rotate) {
             plane.rotation.z += ROTATION_SPEED;
+            pivot.rotation.z += ROTATION_SPEED;
+        }
     };
     // --
 
     animate();
-
 }
 
 //pass new THREE.Vector3
