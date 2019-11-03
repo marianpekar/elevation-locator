@@ -1,7 +1,27 @@
-* { margin: 0; padding: 0; }
-body { overflow: hidden; position: fixed; font-size: 0.8em }
-canvas { display: block; width: 100%; height: 100% }
-li { list-style-type: none; }
+* { 
+    margin: 0; 
+    padding: 0; 
+}
+
+body { 
+    overflow: hidden; 
+    position: fixed; 
+    font-size: 0.8em;
+    
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+     -ms-user-select: none;
+         user-select: none;
+}
+
+canvas { 
+    display: block; 
+    width: 100%; 
+    height: 100% }
+
+li { 
+    list-style-type: none; 
+}
 
 #location-label {  
     color: #40c4ff;    
