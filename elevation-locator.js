@@ -141,34 +141,53 @@ function AddEventListeners() {
     downArrowButton.addEventListener('click', GoSouth);
 
     let zoomInTouchTimer;
-    zoomInButton.addEventListener('touchstart', () => { zoomInTouchTimer = AddContinous(ZoomIn, TOUCH_SPEED); });
-    zoomInButton.addEventListener('touchend', () =>   { RemoveContinous(zoomInTouchTimer);
-    });
+    zoomInButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        zoomInTouchTimer = AddContinous(ZoomIn, TOUCH_SPEED); 
+    }, { passive: false });
+    zoomInButton.addEventListener('touchend', () =>   { RemoveContinous(zoomInTouchTimer); });
 
     let zoomOutTouchTimer;
-    zoomOutButton.addEventListener('touchstart', () => { zoomOutTouchTimer = AddContinous(ZoomOut, TOUCH_SPEED); });
-    zoomOutButton.addEventListener('touchend', () =>   { RemoveContinous(zoomOutTouchTimer);
-    });
+    zoomOutButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        zoomOutTouchTimer = AddContinous(ZoomOut, TOUCH_SPEED); 
+    }, { passive: false });
+    zoomOutButton.addEventListener('touchend', () =>   { RemoveContinous(zoomOutTouchTimer); });
 
     let leftArrowTouchTimer;
-    leftArrowButton.addEventListener('touchstart', () => { leftArrowTouchTimer = AddContinous(GoWest, TOUCH_SPEED); });
-    leftArrowButton.addEventListener('touchend', () =>   { RemoveContinous(leftArrowTouchTimer);
-    });
+    leftArrowButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        leftArrowTouchTimer = AddContinous(GoWest, TOUCH_SPEED); 
+    }, { passive: false });
+    leftArrowButton.addEventListener('touchend', () =>   { RemoveContinous(leftArrowTouchTimer); });
 
     let rightArrowTouchTimer;
-    rightArrowButton.addEventListener('touchstart', () => { rightArrowTouchTimer = AddContinous(GoEast, TOUCH_SPEED); });
-    rightArrowButton.addEventListener('touchend', () =>   { RemoveContinous(rightArrowTouchTimer);
-    });
+    rightArrowButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        rightArrowTouchTimer = AddContinous(GoEast, TOUCH_SPEED); 
+    }, { passive: false });
+    rightArrowButton.addEventListener('touchend', () =>   { RemoveContinous(rightArrowTouchTimer); });
 
     let upArrowTouchTimer;
-    upArrowButton.addEventListener('touchstart', () => { upArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); });
-    upArrowButton.addEventListener('touchend', () =>   { RemoveContinous(upArrowTouchTimer);
-    });
+    upArrowButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        upArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); 
+    }, { passive: false });
+    upArrowButton.addEventListener('touchend', () =>   { RemoveContinous(upArrowTouchTimer); });
 
     let downArrowTouchTimer;
-    downArrowButton.addEventListener('touchstart', () => { downArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); });
+    downArrowButton.addEventListener('touchstart', (e) => { 
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        downArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); 
+    }, { passive: false });
     downArrowButton.addEventListener('touchend', () =>   { RemoveContinous(downArrowTouchTimer);
-    });
+    }, { passive: false });
 
     window.addEventListener("keydown", (e) => {    
         let callDataProvider = false;
