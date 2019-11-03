@@ -31,8 +31,6 @@ Change geolocation, rotation, and zoom
 - [ S ] ➜ Move south
 - [ A ] ➜ Move west
 - [ D ] ➜ Move east
-- [ Q ] ➜ [ W ] + [ A ]
-- [ E ] ➜ [ S ] + [ D ]
 - [ R ] ➜ Turn rotation on/off
 - [ + ] ➜ Zoom in*
 - [ - ] ➜ Zoom out

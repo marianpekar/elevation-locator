@@ -79,32 +79,44 @@ function UpdateLabels() {
     resolutionLabel.setAttribute('style', labelStylePos);
 }
 
+function UpdateElevationData() {
+    elevationDataProvider.GetElevationData(lat, lon, step, SIZE, CreateTerrain);
+}
+
 function ZoomIn() {
     step -= ZOOM_STEP;
-
     if(step < MIN_STEP) step = MIN_STEP;
+    UpdateElevationData();
 }
 
 function ZoomOut() {
     step += ZOOM_STEP;
-
     if(step > MAX_STEP) step = MAX_STEP;
+    UpdateElevationData();
 }
 
 function GoNorth() {
     lat += step;
+    if(lat > 90) lat = 90;
+    UpdateElevationData();
 }
 
 function GoSouth() {
     lat -= step;
+    if(lat < -90) lat = -90; 
+    UpdateElevationData();
 }
 
 function GoWest() {
     lon -= step;
+    if(lon < -180) lon = 180;
+    UpdateElevationData();
 }
 
 function GoEast() {
     lon += step;
+    if(lon > 180) lon = 180;
+    UpdateElevationData();
 }
 
 function AddEventListeners() {
@@ -122,46 +134,22 @@ function AddEventListeners() {
     
         if(e.code == 'KeyD') {
             GoEast();
-            callDataProvider = true;
         }
         if(e.code == 'KeyA') {
             GoWest();
-            callDataProvider = true;
         }
         if(e.code == 'KeyW') {
             GoNorth();
-            callDataProvider = true;
         }
         if(e.code == 'KeyS') {
             GoSouth();
-            callDataProvider = true;
-        }
-        if(e.code == 'KeyE') {
-            lat += step;
-            lon += step;
-            callDataProvider = true;
-        }
-        if(e.code == 'KeyQ') {
-            lat -= step;
-            lon -= step;
-            callDataProvider = true;
         }
         if(e.key == '+') {
             ZoomIn();
-            callDataProvider = true;
         }
         if(e.key == '-') {
             ZoomOut();
-            callDataProvider = true;
         }
-    
-        if(lon > 180) lon = 180;
-        if(lon < -180) lon = 180;
-        if(lat > 90) lat = 90;
-        if(lat < -90) lat = -90; 
-
-        if(callDataProvider) 
-            elevationDataProvider.GetElevationData(lat, lon, step, SIZE, CreateTerrain);
     });
 
     window.addEventListener("keypress", (e) => {
