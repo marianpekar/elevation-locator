@@ -7,7 +7,7 @@ body {
     overflow: hidden; 
     position: fixed; 
     font-size: 0.8em;
-    
+
     -webkit-user-select: none;
     -moz-user-select: -moz-none;
      -ms-user-select: none;
@@ -45,7 +45,8 @@ li {
     overflow: hidden;
 }
 
-.buttons {    
+.buttons {
+    touch-action: none;    
     position: absolute;
     margin: 1em;
     cursor: pointer;
