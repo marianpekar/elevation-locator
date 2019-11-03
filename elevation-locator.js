@@ -15,6 +15,8 @@ const MIN_STEP = 0.001000;
 const MAX_STEP = 1.000000;
 let step = 0.001000;
 
+const TOUCH_SPEED = 200; // miliseconds
+
 let lat = 0;
 let lon = 0;
 
@@ -119,6 +121,15 @@ function GoEast() {
     UpdateElevationData();
 }
 
+function AddContinous(action, interval) {
+    let timer = setInterval(action, interval);
+    return timer;
+}
+
+function RemoveContinous(timer) {
+    clearInterval(timer);
+}
+
 function AddEventListeners() {
     locationButton.addEventListener('click', GetCurrentLocation);
     zoomInButton.addEventListener('click', ZoomIn);
@@ -128,6 +139,36 @@ function AddEventListeners() {
     rightArrowButton.addEventListener('click', GoEast);
     upArrowButton.addEventListener('click', GoNorth);
     downArrowButton.addEventListener('click', GoSouth);
+
+    let zoomInTouchTimer;
+    zoomInButton.addEventListener('touchstart', () => { zoomInTouchTimer = AddContinous(ZoomIn, TOUCH_SPEED); });
+    zoomInButton.addEventListener('touchend', () =>   { RemoveContinous(zoomInTouchTimer);
+    });
+
+    let zoomOutTouchTimer;
+    zoomOutButton.addEventListener('touchstart', () => { zoomOutTouchTimer = AddContinous(ZoomOut, TOUCH_SPEED); });
+    zoomOutButton.addEventListener('touchend', () =>   { RemoveContinous(zoomOutTouchTimer);
+    });
+
+    let leftArrowTouchTimer;
+    leftArrowButton.addEventListener('touchstart', () => { leftArrowTouchTimer = AddContinous(GoWest, TOUCH_SPEED); });
+    leftArrowButton.addEventListener('touchend', () =>   { RemoveContinous(leftArrowTouchTimer);
+    });
+
+    let rightArrowTouchTimer;
+    rightArrowButton.addEventListener('touchstart', () => { rightArrowTouchTimer = AddContinous(GoEast, TOUCH_SPEED); });
+    rightArrowButton.addEventListener('touchend', () =>   { RemoveContinous(rightArrowTouchTimer);
+    });
+
+    let upArrowTouchTimer;
+    upArrowButton.addEventListener('touchstart', () => { upArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); });
+    upArrowButton.addEventListener('touchend', () =>   { RemoveContinous(upArrowTouchTimer);
+    });
+
+    let downArrowTouchTimer;
+    downArrowButton.addEventListener('touchstart', () => { downArrowTouchTimer = AddContinous(GoNorth, TOUCH_SPEED); });
+    downArrowButton.addEventListener('touchend', () =>   { RemoveContinous(downArrowTouchTimer);
+    });
 
     window.addEventListener("keydown", (e) => {    
         let callDataProvider = false;
