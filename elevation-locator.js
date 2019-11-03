@@ -280,7 +280,7 @@ function DDToDMS(lat, lon) {
     latResult += GetDms(lat);
     lonResult += GetDms(lon);
 
-    return `${latResult} ${lonResult}`;
+    return `${latResult}&nbsp${lonResult}`;
  }
 
 function GetDms(val) {
