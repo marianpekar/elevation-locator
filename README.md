@@ -39,7 +39,8 @@ Change geolocation, rotation, and zoom
 
 *) Decrease step size = plane covers a smaller area (in square degrees) in bigger detail. Zoom out works the other way around, of course.
 
+### On-screen Buttons
 
-
+Comes handy on touch screens.
 
 
