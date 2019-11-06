@@ -57,6 +57,7 @@ Init();
 function Init() {
     GetCurrentLocation();
     AddEventListeners();
+    CreateScene();
 
     setInterval(() => {        
         if(updateLocationAutomatically)
@@ -83,7 +84,7 @@ function SetLocation(position) {
     && Math.abs(lon - originalLon) < UPDATE_LOCATION_THRESHOLD)
         return;
 
-    elevationDataProvider.GetElevationData(lat, lon, step, SIZE, LoadScene);
+    elevationDataProvider.GetElevationData(lat, lon, step, SIZE, UpdateTerrain);
 }
 
 function UpdateLabels() {
@@ -318,7 +319,7 @@ function AddNorthPointer() {
     scene.add( pivot );
 }
 
-function LoadScene(elevations) {
+function CreateScene() {
     scene.background = new THREE.Color( 0x1c313a );
 
     new THREE.OrbitControls( camera, renderer.domElement );
@@ -326,13 +327,9 @@ function LoadScene(elevations) {
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    CreateTerrain(elevations);
-    AddAxis();
-    AddNorthPointer();
-
     camera.position.y = 6000;
     camera.position.z = 3000;
-    camera.lookAt(plane.position);
+    camera.lookAt(new THREE.Vector3(0,0,0));
 
     // render loop
     let animate = function () {
@@ -347,6 +344,12 @@ function LoadScene(elevations) {
     // --
 
     animate();
+}
+
+function UpdateTerrain(elevations) {
+    CreateTerrain(elevations);
+    AddAxis();
+    AddNorthPointer();
 }
 
 //pass new THREE.Vector3
