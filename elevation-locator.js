@@ -161,6 +161,11 @@ function SwitchUpdateLocationAutomatically() {
         locationButton.src = 'images/location-off.svg';
 }
 
+function DisableUpdateLocationAutomatically() {
+    updateLocationAutomatically = false;
+    locationButton.src = 'images/location-off.svg';
+}
+
 function AddEventListeners() {
     locationButton.addEventListener('click', SwitchUpdateLocationAutomatically);
     zoomInButton.addEventListener('click', ZoomIn);
@@ -220,19 +225,21 @@ function AddEventListeners() {
     downArrowButton.addEventListener('touchend', () =>   { RemoveContinous(downArrowTouchTimer);
     }, { passive: false });
 
-    window.addEventListener("keydown", (e) => {    
-        let callDataProvider = false;
-    
+    window.addEventListener("keydown", (e) => {        
         if(e.code == 'KeyD') {
+            DisableUpdateLocationAutomatically();
             GoEast();
         }
         if(e.code == 'KeyA') {
+            DisableUpdateLocationAutomatically();
             GoWest();
         }
         if(e.code == 'KeyW') {
+            DisableUpdateLocationAutomatically();
             GoNorth();
         }
         if(e.code == 'KeyS') {
+            DisableUpdateLocationAutomatically();
             GoSouth();
         }
         if(e.key == '+') {
