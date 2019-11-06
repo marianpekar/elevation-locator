@@ -120,24 +120,28 @@ function ZoomOut() {
 }
 
 function GoNorth() {
+    DisableUpdateLocationAutomatically();
     lat += step;
     if(lat > 90) lat = 90;
     UpdateElevationData();
 }
 
 function GoSouth() {
+    DisableUpdateLocationAutomatically();
     lat -= step;
     if(lat < -90) lat = -90; 
     UpdateElevationData();
 }
 
 function GoWest() {
+    DisableUpdateLocationAutomatically();
     lon -= step;
     if(lon < -180) lon = 180;
     UpdateElevationData();
 }
 
 function GoEast() {
+    DisableUpdateLocationAutomatically();
     lon += step;
     if(lon > 180) lon = 180;
     UpdateElevationData();
@@ -227,19 +231,15 @@ function AddEventListeners() {
 
     window.addEventListener("keydown", (e) => {        
         if(e.code == 'KeyD') {
-            DisableUpdateLocationAutomatically();
             GoEast();
         }
         if(e.code == 'KeyA') {
-            DisableUpdateLocationAutomatically();
             GoWest();
         }
         if(e.code == 'KeyW') {
-            DisableUpdateLocationAutomatically();
             GoNorth();
         }
         if(e.code == 'KeyS') {
-            DisableUpdateLocationAutomatically();
             GoSouth();
         }
         if(e.key == '+') {
