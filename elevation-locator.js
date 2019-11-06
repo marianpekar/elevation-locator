@@ -80,7 +80,7 @@ function SetLocation(position) {
     lon = position.coords.longitude;
 
     if(Math.abs(lat - originalLat) < UPDATE_LOCATION_THRESHOLD 
-    && Math.abs(lon - originalLon) < UPDATE_LOCATION_THRESHOLD)
+    || Math.abs(lon - originalLon) < UPDATE_LOCATION_THRESHOLD)
         return;
 
     elevationDataProvider.GetElevationData(lat, lon, step, SIZE, LoadScene);
@@ -329,11 +329,7 @@ function LoadScene(elevations) {
     CreateTerrain(elevations);
     AddAxis();
     AddNorthPointer();
-
-    camera.position.y = 6000;
-    camera.position.z = 3000;
-    camera.lookAt(plane.position);
-
+    
     // render loop
     let animate = function () {
         requestAnimationFrame( animate );
