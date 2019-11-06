@@ -56,8 +56,9 @@ function Init() {
 
 function GetCurrentLocation() {
     if(navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(SetLocation); 
+        navigator.geolocation.getCurrentPosition(SetLocation, (error) => { window.alert(`Cannot proceed: ${error.message}`) }); 
 }
+
 
 function SetLocation(position) {
     lat = position.coords.latitude;
