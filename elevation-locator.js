@@ -13,6 +13,7 @@ const CAMERA_FAR_PLANE = 20000;
 const ZOOM_STEP = 0.0001;
 const MIN_STEP = 0.001000;
 const MAX_STEP = 1.000000;
+
 let step = 0.001000;
 
 const TOUCH_SPEED = 200; // miliseconds
@@ -22,6 +23,10 @@ let lon = 0;
 
 let rotate = 0;
 const ROTATION_SPEED = 0.001; 
+
+const UPDATE_LOCATION_INTERVAL = 1000; // miliseconds
+const UPDATE_LOCATION_THRESHOLD = 0.000001; // 0.000001 ≈ individual humans
+let updateLocationAutomatically = true;
 
 let elevationDataProvider = new ElevationDataProvider(KEY);
 
@@ -52,7 +57,14 @@ Init();
 function Init() {
     GetCurrentLocation();
     AddEventListeners();
+
+    setInterval(() => {        
+        if(updateLocationAutomatically)
+            GetCurrentLocation(); 
+    }, UPDATE_LOCATION_INTERVAL);
 }
+
+
 
 function GetCurrentLocation() {
     if(navigator.geolocation)
@@ -61,8 +73,16 @@ function GetCurrentLocation() {
 
 
 function SetLocation(position) {
+    let originalLat = lat;
+    let originalLon = lon;
+
     lat = position.coords.latitude;
     lon = position.coords.longitude;
+
+    if(Math.abs(lat - originalLat) < UPDATE_LOCATION_THRESHOLD 
+    && Math.abs(lon - originalLon) < UPDATE_LOCATION_THRESHOLD)
+        return;
+
     elevationDataProvider.GetElevationData(lat, lon, step, SIZE, LoadScene);
 }
 
@@ -131,8 +151,17 @@ function RemoveContinous(timer) {
     clearInterval(timer);
 }
 
+function SwitchUpdateLocationAutomatically() {
+    updateLocationAutomatically = !updateLocationAutomatically;
+        
+    if(updateLocationAutomatically)
+        locationButton.src = 'images/location.svg';
+    else
+        locationButton.src = 'images/location-off.svg';
+}
+
 function AddEventListeners() {
-    locationButton.addEventListener('click', GetCurrentLocation);
+    locationButton.addEventListener('click', SwitchUpdateLocationAutomatically);
     zoomInButton.addEventListener('click', ZoomIn);
     zoomOutButton.addEventListener('click', ZoomOut);
 
