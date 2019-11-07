@@ -25,7 +25,6 @@ let rotate = 0;
 const ROTATION_SPEED = 0.001; 
 
 const UPDATE_LOCATION_INTERVAL = 1000; // miliseconds
-const UPDATE_LOCATION_THRESHOLD = 0.000001; // 0.000001 ≈ individual humans
 let updateLocationAutomatically = true;
 
 let elevationDataProvider = new ElevationDataProvider(KEY);
@@ -80,8 +79,7 @@ function SetLocation(position) {
     lat = position.coords.latitude;
     lon = position.coords.longitude;
 
-    if(Math.abs(lat - originalLat) < UPDATE_LOCATION_THRESHOLD 
-    && Math.abs(lon - originalLon) < UPDATE_LOCATION_THRESHOLD)
+    if(lat == originalLat && lon == originalLon)
         return;
 
     elevationDataProvider.GetElevationData(lat, lon, step, SIZE, UpdateTerrain);
