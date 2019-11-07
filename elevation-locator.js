@@ -68,7 +68,7 @@ function Init() {
 
 function GetCurrentLocation() {
     if(navigator.geolocation)
-        navigator.geolocation.getCurrentPosition(SetLocation, (error) => { window.alert(`Cannot proceed: ${error.message}`) }); 
+        navigator.geolocation.getCurrentPosition(SetLocation, (error) => { window.alert(`Cannot proceed: ${error.message}`) }, { enableHighAccuracy: true }); 
 }
 
 
@@ -79,9 +79,12 @@ function SetLocation(position) {
     lat = position.coords.latitude;
     lon = position.coords.longitude;
 
-    if(lat == originalLat && lon == originalLon)
+    if(lat == originalLat && lon == originalLon) {
+        console.log('loc stay');
         return;
+    }
 
+    console.log('loc changed');
     elevationDataProvider.GetElevationData(lat, lon, step, SIZE, UpdateTerrain);
 }
 
