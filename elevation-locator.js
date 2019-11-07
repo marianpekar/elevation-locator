@@ -80,11 +80,9 @@ function SetLocation(position) {
     lon = position.coords.longitude;
 
     if(lat == originalLat && lon == originalLon) {
-        console.log('loc stay');
         return;
     }
 
-    console.log('loc changed');
     elevationDataProvider.GetElevationData(lat, lon, step, SIZE, UpdateTerrain);
 }
 
